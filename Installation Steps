@@ -4,6 +4,8 @@ K8S Master & Slave setup
 
 Step 1 : Create 3 GCP instances : 1 Master & 2 Worker Nodes
 
+
+OPtion : 1 Calico service running 
 ---------------
 On all 3 nodes :
 ---------------
@@ -28,6 +30,38 @@ On Master node only :
 15) sudo kubectl apply -f https://docs.projectcalico.org/v3.9/manifests/calico.yaml
 16) kubectl get pods --all-namespaces
 17) kubectl get nodes
+
+Option : 2          Calico issue and run flannel:
+
+[0:19 am, 20/05/2020] Goms Devops: On all 3 nodes :
+---------------
+   sudo su - 
+   apt update
+a) sudo apt install docker.io -y
+b) docker version
+c) sudo systemctl enable docker
+d) curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+e) sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+f) sudo apt install kubeadm -y
+g) kubeadm version
+
+--------------------
+On Master node only :
+--------------------
+h) sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+i) mkdir -p $HOME/.kube
+j) sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+k) sudo chown $(id -u):$(id -g) $HOME/.kube/config
+l) kubectl get nodes
+m) sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+[0:19 am, 20/05/2020] Goms Devops: ---------------------
+On Slave nodes only :
+---------------------
+[ Use the kubeadm join command ouput from your master kubeadm init command output . DO NOT USE BELOW COMMAND AS IT IS ]
+
+o) kubeadm join 192.168.100.6:6443 --token 06tl4c.oqn35jzecidg0r0m --discovery-token-ca-cert-hash sha256:c40f5fa0aba6ba311efcdb0e8cb637ae0eb8ce27b7a03d47be6d966142f2204c
+p) kubectl get nodes
+[0:19 am, 20/05/2020] Goms Devops: =================
 
 ---------------------
 On Slave nodes only :
