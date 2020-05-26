@@ -54,7 +54,16 @@ j) sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 k) sudo chown $(id -u):$(id -g) $HOME/.kube/config
 l) kubectl get nodes
 m) sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-[0:19 am, 20/05/2020] Goms Devops: ---------------------
+
+Optional 3: Calico and flannel not working means , we will try weave
+On Master node only :
+--------------------
+h) sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+i) mkdir -p $HOME/.kube
+j) sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+k) sudo chown $(id -u):$(id -g) $HOME/.kube/config
+l) kubectl get nodes
+m) kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 On Slave nodes only :
 ---------------------
 [ Use the kubeadm join command ouput from your master kubeadm init command output . DO NOT USE BELOW COMMAND AS IT IS ]
